@@ -1,0 +1,47 @@
+footer {
+  background-color: #343333;
+  padding: 70px;
+  color: aliceblue;
+  height: 140px;
+}
+
+footer .container {
+  display: flex;
+  align-items: left;
+  justify-content: space-between;
+  height: 100px;
+}
+
+footer .container div {
+  width: 400%;
+  height: 50px;
+  text-align: center;
+  line-height: 20px;
+  font-size: 10px;
+  text-align: left;
+}
+
+footer div li {
+  list-style: none;
+  font-size: 13px;
+  padding: 2px;
+}
+
+footer div h1 {
+  color: #e0a449;
+  text-align: left;
+}
+
+footer .container div .socials img {
+  display: flexbox;
+  margin: 0 10px 0 0px;
+  width: 25px;
+}
+
+footer .container div .socials {
+  padding-top: 7px;
+}
+
+footer h6 {
+  padding-top: 60px;
+}
