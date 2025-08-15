@@ -1,14 +1,29 @@
-const { alias, configPaths } = require('react-app-rewire-alias');
+const { override, addWebpackAlias, addWebpackPlugin } = require('customize-cra');
+const webpack = require('webpack');
+const path = require('path'); // Import the path module
 
-module.exports = function override(config, env) {
-  alias({
-    '@components': 'src/components',
-    '@constants': 'src/constants',
-    '@pages': 'src/pages',
-    '@utils': 'src/utils',
-    '@assets': 'src/assets',
-    '@socials': 'src/assets/socials',
-    '@icons': 'src/assets/icons',
-  })(config);
-  return config;
-};
+module.exports = override(
+  (config) => {
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      path: require.resolve('path-browserify'),
+    };
+    return config;
+  },
+  addWebpackPlugin(
+    new webpack.DefinePlugin({
+      'process.env': {
+        REACT_APP_API_KEY: JSON.stringify(process.env.REACT_APP_API_KEY),
+      },
+    }),
+  ),
+  addWebpackAlias({
+    '@components': path.resolve(__dirname, 'src/components'),
+    '@constants': path.resolve(__dirname, 'src/constants'),
+    '@pages': path.resolve(__dirname, 'src/pages'),
+    '@utils': path.resolve(__dirname, 'src/utils'),
+    '@assets': path.resolve(__dirname, 'src/assets'),
+    '@socials': path.resolve(__dirname, 'src/assets/socials'),
+    '@icons': path.resolve(__dirname, 'src/assets/icons'),
+  }),
+);

@@ -1,8 +1,8 @@
-import navLogo from '@assets/navLogo.png';
-import instagram from '@assets/socials/instagram.png';
-import twitter from '@assets/socials/twitter.png';
-import facebook from '@socials/facebook.png';
-import github from '@socials/github.png';
+import navLogo from '@assets/navLogo.svg';
+import instagram from '@assets/socials/instagram.svg';
+import twitter from '@assets/socials/twitter.svg';
+import facebook from '@socials/facebook.svg';
+import github from '@socials/github.svg';
 
 import './Footer.css';
 

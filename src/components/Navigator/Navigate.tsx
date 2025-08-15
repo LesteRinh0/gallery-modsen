@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom';
 
-import navLogo from '@assets/navLogo.png';
+import navLogo from '@assets/navLogo.svg';
 
 import './Navigate.css';
 
@@ -13,10 +13,10 @@ const Navigate = () => {
           <Link to="/">Category</Link>
         </li>
         <li className="images">
-          <Link to="/images">Images</Link>
+          <Link to="/search">Images</Link>
         </li>
         <li className="favourities">
-          <Link to="/favourites">Favourites</Link>
+          <Link to="/favourites">Favorites</Link>
         </li>
       </ul>
     </nav>

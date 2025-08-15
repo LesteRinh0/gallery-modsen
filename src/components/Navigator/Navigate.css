@@ -22,7 +22,7 @@ nav ul li.category::before {
   top: 5px;
   width: 25px;
   height: 19px;
-  background-image: url('@icons/Vector.png');
+  background-image: url('@icons/Vector.svg');
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -34,7 +34,7 @@ nav ul li.images::before {
   top: 5px;
   width: 25px;
   height: 19px;
-  background-image: url('@icons/Image.png');
+  background-image: url('@icons/Image.svg');
   background-size: contain;
   background-repeat: no-repeat;
 }
@@ -46,7 +46,7 @@ nav ul li.favourities::before {
   top: 5px;
   width: 25px;
   height: 19px;
-  background-image: url('@icons/Favourities.png');
+  background-image: url('@icons/Favourities.svg');
   background-size: contain;
   background-repeat: no-repeat;
 }

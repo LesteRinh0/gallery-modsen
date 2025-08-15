@@ -1,5 +1,5 @@
 import bgImg from '@assets/bg-img.png';
-import PhotoesGenerate from '@utils/PhotosGenerate';
+import PhotosGenerate from '@utils/PhotoGenerate/PhotosGenerate';
 
 import './Category.css';
 
@@ -8,13 +8,13 @@ const Category = () => {
     <div>
       <div className="image-container">
         <img src={bgImg} alt="Background Image" />
-        <div className="text-overlay">
+        <div className="text-overlays">
           <span>Let's Find Some </span>
           <span className="orange">Images</span>
           <span> Here!</span>
         </div>
       </div>
-      <PhotoesGenerate />
+      <PhotosGenerate />
     </div>
   );
 };

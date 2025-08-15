@@ -1,0 +1,76 @@
+.favorites-container {
+  padding: 20px;
+}
+
+.save-by-you {
+  text-align: center; /*  Центрируем текст */
+}
+
+.your-favorites {
+  text-align: center; /* Центрируем текст */
+}
+
+.image-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.image-block {
+  width: calc(30% - 20px);
+  margin: 10px;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.grid-image {
+  width: 100%;
+  height: auto;
+  display: block;
+  object-fit: cover;
+  aspect-ratio: 1 / 1;
+}
+
+.image-label {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(255, 255, 255);
+  color: black;
+  text-align: left;
+  padding: 5px 10px;
+  font-size: 14px;
+  box-sizing: border-box;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.image-label span {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  width: 100%;
+}
+
+.remove-favorite-icon {
+  width: 20px;
+  height: 20px;
+  cursor: pointer;
+}
+
+.save-by-you {
+  text-align: center;
+  color: #f17900;
+}
+.empty-list-message {
+  text-align: center;
+  color: black;
+}
