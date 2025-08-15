@@ -12,19 +12,19 @@ import './App.css';
 function App() {
   return (
     <BrowserRouter>
-      <div>
-        <header>
-          <Navigate />
-        </header>
-
-        <Routes>
-          <Route path="/" element={<Category />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="/favourites" element={<Favourites />} />
-          <Route path="/search" element={<Search />} />
-          <Route path="*" element={<NotFound />} />
-        </Routes>
-
+      <header>
+        <Navigate />
+      </header>
+      <div className="app-container">
+        <div className="content">
+          <Routes>
+            <Route path="/" element={<Category />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="/favourites" element={<Favourites />} />
+            <Route path="/search" element={<Search />} />
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </div>
         <Footer />
       </div>
     </BrowserRouter>

@@ -1,0 +1,27 @@
+.not-found-text {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  padding-top: 30px;
+}
+
+.not-found-text .title {
+  margin-bottom: 20px;
+}
+
+.not-found-text .title h1 {
+  font-size: 5em; 
+  margin: 0;
+  color: #f17900;
+}
+
+.not-found-text .title h2 {
+  font-size: 2em;
+  margin: 0;
+  color: #f17900;
+}
+
+.not-found-text .message h1 {
+  font-size: 2.5em;
+  margin: 0;
+}

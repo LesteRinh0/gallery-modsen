@@ -2,9 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import bgImg from '@assets/bg-img.png';
-import favorite from '@assets/icons/Favorite.svg';
 import searchIcn from '@assets/icons/Search.svg';
 import Loader from '@components/Loader/Loader';
+import favorite from '@assets/icons/Favorite.svg';
+import favoriteFilled from '@assets/icons/FavoriteFilled.svg';
+import closeIcon from '@assets/icons/Close.svg';
+import arrowLeft from '@assets/icons/Arrow-left.svg';
+import arrowRight from '@assets/icons/Arrow-right.svg';
 
 import './Search.css';
 
@@ -19,7 +23,7 @@ interface UnsplashImage {
 
 type SortOrder = 'relevant' | 'latest';
 
-const IMAGES_PER_PAGE = 12;
+const IMAGES_PER_PAGE = 9;
 const MAX_VISIBLE_PAGES = 3;
 
 const Search = () => {
@@ -31,7 +35,10 @@ const Search = () => {
   const [sortOrder, setSortOrder] = useState<SortOrder>('relevant');
   const location = useLocation();
   const navigate = useNavigate();
-  const [favorites, setFavorites] = useState<UnsplashImage[]>(JSON.parse(localStorage.getItem('favorites') || '[]'));
+  const [favorites, setFavorites] = useState<UnsplashImage[]>(
+    JSON.parse(localStorage.getItem('favorites') || '[]'),
+  );
+  const [selectedImage, setSelectedImage] = useState<UnsplashImage | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -74,7 +81,7 @@ const Search = () => {
         throw new Error(`Ошибка запроса: ${response.status}`);
       }
 
-      const data = (await response.json()) as {
+      const data = await response.json() as {
         results: UnsplashImage[];
         total: number;
         total_pages: number;
@@ -130,8 +137,6 @@ const Search = () => {
     return visiblePages;
   };
 
-  const visiblePageNumbers = getVisiblePageNumbers();
-
   const isFavorite = (imageId: string) => {
     return favorites.some((fav) => fav.id === imageId);
   };
@@ -143,6 +148,36 @@ const Search = () => {
       setFavorites([...favorites, image]);
     }
   };
+
+  const getFavoriteIcon = (imageId: string) => {
+    return isFavorite(imageId) ? favoriteFilled : favorite;
+  };
+
+  const handleImageClick = (image: UnsplashImage) => {
+    setSelectedImage(image);
+  };
+
+  const handleCloseFullscreen = () => {
+    setSelectedImage(null);
+  };
+
+  const goToPreviousImage = () => {
+    if (!selectedImage) return;
+    const currentIndex = images.findIndex((img) => img.id === selectedImage.id);
+    if (currentIndex > 0) {
+      setSelectedImage(images[currentIndex - 1]);
+    }
+  };
+
+  const goToNextImage = () => {
+    if (!selectedImage) return;
+    const currentIndex = images.findIndex((img) => img.id === selectedImage.id);
+    if (currentIndex < images.length - 1) {
+      setSelectedImage(images[currentIndex + 1]);
+    }
+  };
+
+  const visiblePageNumbers = getVisiblePageNumbers();
 
   return (
     <div>
@@ -191,16 +226,17 @@ const Search = () => {
                     src={image.urls.regular || image.urls.small}
                     alt={image.alt_description || 'Image'}
                     className="grid-image"
+                    onClick={() => handleImageClick(image)}
                   />
                   <div className="image-label">
-                    <span>{truncateText(image.alt_description || 'Без описания', 30)}</span>
+                    <span>{truncateText(image.alt_description || 'Без описания', 50)}</span>
                     <img
-                      src={favorite}
+                      src={getFavoriteIcon(image.id)}
                       alt="Favorite"
                       className="favorite-icon"
-                      onClick={() => toggleFavorite(image)}
-                      style={{
-                        filter: isFavorite(image.id) ? 'brightness(0) saturate(100%) hue-rotate(320deg)' : 'none',
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        toggleFavorite(image);
                       }}
                     />
                   </div>
@@ -208,7 +244,9 @@ const Search = () => {
               ))}
             </div>
             <div className="pagination">
-              {currentPage > 1 && <button onClick={() => handlePageChange(currentPage - 1)}>Previous</button>}
+              {currentPage > 1 && (
+                <button onClick={() => handlePageChange(currentPage - 1)}>Previous</button>
+              )}
               {visiblePageNumbers.map((pageNumber) => (
                 <button
                   key={pageNumber}
@@ -218,11 +256,46 @@ const Search = () => {
                   {pageNumber}
                 </button>
               ))}
-              {currentPage < totalPages && <button onClick={() => handlePageChange(currentPage + 1)}>Next</button>}
+              {currentPage < totalPages && (
+                <button onClick={() => handlePageChange(currentPage + 1)}>Next</button>
+              )}
             </div>
           </>
         )}
       </div>
+
+      {selectedImage && (
+        <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
+          <div className="fullscreen-image-block">
+            <button className="arrow-button left" onClick={(e) => {e.stopPropagation(); goToPreviousImage();}}>
+              <img src={arrowLeft} alt="Previous" />
+            </button>
+            <img
+              src={selectedImage.urls.regular}
+              alt={selectedImage.alt_description || 'Fullscreen Image'}
+              className="grid-image"
+            />
+            <div className="image-label">
+              <span>{truncateText(selectedImage.alt_description || 'Без описания', 50)}</span>
+              <img
+                src={getFavoriteIcon(selectedImage.id)}
+                alt="Favorite"
+                className="favorite-icon"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  toggleFavorite(selectedImage);
+                }}
+              />
+            </div>
+            <button className="arrow-button right" onClick={(e) => {e.stopPropagation(); goToNextImage();}}>
+              <img src={arrowRight} alt="Next" />
+            </button>
+            <button className="close-button" onClick={handleCloseFullscreen}>
+              <img src={closeIcon} alt="Close" />
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

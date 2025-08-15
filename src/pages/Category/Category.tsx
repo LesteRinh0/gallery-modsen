@@ -1,5 +1,5 @@
 import bgImg from '@assets/bg-img.png';
-import PhotosGenerate from '@utils/PhotoGenerate/PhotosGenerate';
+import PhotosGenerate from '@components/PhotoGenerate/PhotosGenerate';
 
 import './Category.css';
 
