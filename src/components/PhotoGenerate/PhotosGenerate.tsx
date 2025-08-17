@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import Loader from '@components/Loader/Loader';
 import API_URL from '@constants/api_url';
+import { ThemeWithImagesResponse } from 'types/types';
 
 import './PhotoGenerate.css';
 
@@ -34,13 +35,13 @@ const PhotosGenerate = () => {
           return;
         }
 
-        const data: any[] = await response.json();
+        const data: ThemeWithImagesResponse[] = await response.json();
 
         const themesWithImages = data.map((topic) => ({
           id: topic.id,
           slug: topic.slug,
           title: topic.title,
-          imageUrl: topic.cover_photo?.urls?.small || null,
+          imageUrl: topic.cover_photo?.urls?.small,
         }));
 
         setThemes(themesWithImages);

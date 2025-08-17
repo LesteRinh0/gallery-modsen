@@ -1,11 +1,12 @@
 import React from 'react';
 
 import favFilled from '@assets/icons/FavoriteFilled.svg';
+import { UnsplashImage } from 'types/types';
 
 interface FavoriteImageCardProps {
-  image: any;
+  image: UnsplashImage;
   handleRemoveFavorite: (id: string) => void;
-  handleImageClick: (image: any, index: number) => void;
+  handleImageClick: (image: UnsplashImage, index: number) => void;
   index: number;
 }
 

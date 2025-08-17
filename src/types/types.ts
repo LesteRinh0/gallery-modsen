@@ -8,3 +8,14 @@ export interface UnsplashImage {
 }
 
 export type SortOrder = 'relevant' | 'latest';
+
+export interface ThemeWithImagesResponse {
+  id: string;
+  slug: string;
+  title: string;
+  cover_photo?: {
+    urls?: {
+      small: string;
+    };
+  };
+}

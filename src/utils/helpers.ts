@@ -16,7 +16,7 @@ export const getVisiblePageNumbers = (totalPages: number, currentPage: number) =
     }
   } else {
     let startPage = Math.max(1, currentPage - Math.floor(MAX_VISIBLE_PAGES / 2));
-    let endPage = Math.min(totalPages, startPage + MAX_VISIBLE_PAGES - 1);
+    const endPage = Math.min(totalPages, startPage + MAX_VISIBLE_PAGES - 1);
 
     if (endPage === totalPages) {
       startPage = Math.max(1, endPage - MAX_VISIBLE_PAGES + 1);

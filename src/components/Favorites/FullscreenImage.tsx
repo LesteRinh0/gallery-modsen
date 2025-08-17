@@ -4,9 +4,10 @@ import arrowLeft from '@assets/icons/Arrow-left.svg';
 import arrowRight from '@assets/icons/Arrow-right.svg';
 import closeIcon from '@assets/icons/Close.svg';
 import favFilled from '@assets/icons/FavoriteFilled.svg';
+import { UnsplashImage } from 'types/types';
 
 interface FullscreenImageProps {
-  selectedImage: any;
+  selectedImage: UnsplashImage;
   handleCloseFullscreen: () => void;
   goToPreviousImage: () => void;
   goToNextImage: () => void;
