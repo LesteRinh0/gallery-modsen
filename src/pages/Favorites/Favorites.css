@@ -4,6 +4,7 @@
 
 .save-by-you {
   text-align: center;
+  color: #f17900;
 }
 
 .your-favorites {
@@ -66,10 +67,6 @@
   cursor: pointer;
 }
 
-.save-by-you {
-  text-align: center;
-  color: #f17900;
-}
 .empty-list-message {
   text-align: center;
   color: black;

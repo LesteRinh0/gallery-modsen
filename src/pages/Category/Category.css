@@ -14,7 +14,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   color: white;
-  font-size: 7em;
+  font-size: 3em;
   font-weight: bold;
   text-align: center;
   text-shadow:
@@ -26,4 +26,10 @@
 
 .orange {
   color: orange;
+}
+
+@media (max-width: 768px) {
+  .text-overlays {
+    font-size: 2em;
+  }
 }

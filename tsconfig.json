@@ -20,6 +20,7 @@
       "@pages/*": ["pages/*"],
       "@utils/*": ["utils/*"],
       "@assets/*": ["assets/*"],
+      "@hooks/*": ["hooks/*"],
       "@constants/*": ["constants/*"]
     },
     "incremental": true,

@@ -2,7 +2,6 @@ nav {
   display: flex;
   background-color: #343333;
   padding: 16px;
-  gap: 50em;
   justify-content: center;
   color: aliceblue;
 }
@@ -10,7 +9,7 @@ nav {
 .app-container {
   display: flex;
   flex-direction: column;
-  min-height: 100vh; 
+  min-height: 100vh;
 }
 
 .content {

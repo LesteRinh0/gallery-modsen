@@ -1,47 +1,106 @@
 footer {
   background-color: #343333;
-  padding: 70px;
+  padding: 20px;
   color: aliceblue;
-  height: 140px;
+  font-size: 14px;
 }
 
-footer .container {
+.footer-container {
   display: flex;
-  align-items: left;
-  justify-content: space-between;
-  height: 100px;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  max-width: 1200px;
+  margin: 0 auto;
 }
 
-footer .container div {
-  width: 400%;
-  height: 50px;
-  text-align: center;
-  line-height: 20px;
-  font-size: 10px;
+.footer-section {
+  width: 100%;
+  padding: 10px;
+  box-sizing: border-box;
   text-align: left;
+  margin-bottom: 20px;
 }
 
-footer div li {
-  list-style: none;
-  font-size: 13px;
-  padding: 2px;
+.footer-logo {
+  max-width: 200px;
+  height: auto;
+  margin-bottom: 10px;
 }
 
-footer div h1 {
+.footer-description {
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.footer-title {
   color: #e0a449;
-  text-align: left;
+  font-size: 1.2em;
+  margin-bottom: 10px;
 }
 
-footer .container div .socials img {
-  display: flexbox;
-  margin: 0 10px 0 0px;
+.footer-list {
+  list-style: none;
+  padding: 0;
+}
+
+.footer-list li {
+  margin-bottom: 5px;
+}
+
+.footer-list a {
+  color: aliceblue;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-list a:hover {
+  color: #e0a449;
+}
+
+.footer-socials {
+  display: flex;
+  margin-top: 15px;
+}
+
+.social-icon {
+  display: inline-block;
+  margin-right: 10px;
+  transition: transform 0.3s ease;
+}
+
+.social-icon img {
   width: 25px;
+  height: 25px;
+  vertical-align: middle;
 }
 
-footer .container div .socials {
-  padding-top: 7px;
+.social-icon:hover {
+  transform: scale(1.2);
 }
 
-footer h6 {
-  padding-top: 60px;
+.footer-copyright {
+  text-align: center;
+  padding-top: 20px;
+  font-size: 12px;
+}
+
+@media (min-width: 600px) {
+  .footer-section {
+    width: 45%;
+  }
+}
+
+@media (min-width: 992px) {
+  .footer-section {
+    width: 20%;
+    margin-bottom: 0;
+  }
+
+  .footer-container {
+    align-items: flex-start;
+  }
+
+  footer {
+    padding: 70px;
+  }
 }

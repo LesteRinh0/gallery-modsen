@@ -21,7 +21,10 @@
     "start": "react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "husky",
+    "format": "prettier . --check",
+    "lint": "eslint ."
   },
   "eslintConfig": {
     "extends": [
@@ -51,6 +54,7 @@
     "crypto-browserify": "^3.12.1",
     "customize-cra": "^1.0.0",
     "https-browserify": "^1.0.0",
+    "husky": "^9.1.7",
     "os-browserify": "^0.3.0",
     "path-browserify": "^1.0.1",
     "prettier": "^3.6.2",

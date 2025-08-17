@@ -1,30 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import bgImg from '@assets/bg-img.png';
-import searchIcn from '@assets/icons/Search.svg';
-import Loader from '@components/Loader/Loader';
+import bgImg from '@assets/bg-img2.svg';
 import favorite from '@assets/icons/Favorite.svg';
 import favoriteFilled from '@assets/icons/FavoriteFilled.svg';
-import closeIcon from '@assets/icons/Close.svg';
-import arrowLeft from '@assets/icons/Arrow-left.svg';
-import arrowRight from '@assets/icons/Arrow-right.svg';
+import searchIcn from '@assets/icons/Search.svg';
+import Loader from '@components/Loader/Loader';
+import { FullscreenOverlay } from '@components/Search/FullscreenOverlay';
+import getRandomImages from '@utils/getRandomImages';
+import { getVisiblePageNumbers, truncateText } from '@utils/helpers';
+import searchImage from '@utils/searchImages';
+import { SortOrder, UnsplashImage } from 'types/types';
 
 import './Search.css';
-
-interface UnsplashImage {
-  id: string;
-  urls: {
-    small: string;
-    regular: string;
-  };
-  alt_description: string | null;
-}
-
-type SortOrder = 'relevant' | 'latest';
-
-const IMAGES_PER_PAGE = 9;
-const MAX_VISIBLE_PAGES = 3;
 
 const Search = () => {
   const [searchQuery, setSearchQuery] = useState<string>('');
@@ -35,10 +23,39 @@ const Search = () => {
   const [sortOrder, setSortOrder] = useState<SortOrder>('relevant');
   const location = useLocation();
   const navigate = useNavigate();
-  const [favorites, setFavorites] = useState<UnsplashImage[]>(
-    JSON.parse(localStorage.getItem('favorites') || '[]'),
-  );
+  const [favorites, setFavorites] = useState<UnsplashImage[]>(JSON.parse(localStorage.getItem('favorites') || '[]'));
   const [selectedImage, setSelectedImage] = useState<UnsplashImage | null>(null);
+
+  const searchImages = useCallback(
+    async (query: string, sort: SortOrder, page: number) => {
+      try {
+        const data = await searchImage(query, sort, page);
+        setImages(data.results);
+        setTotalPages(data.total_pages);
+      } catch (error) {
+        console.error('Ошибка запроса фото:', error);
+        setImages([]);
+        setTotalPages(1);
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setImages, setLoading, setTotalPages],
+  );
+
+  const fetchRandomImages = useCallback(async () => {
+    try {
+      const data = await getRandomImages();
+      setImages(data);
+      setTotalPages(1);
+    } catch (error) {
+      console.error('Ошибка запроса рандомных фото:', error);
+      setImages([]);
+      setTotalPages(1);
+    } finally {
+      setLoading(false);
+    }
+  }, [setImages, setLoading, setTotalPages]);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
@@ -49,9 +66,9 @@ const Search = () => {
     if (initialQuery) {
       searchImages(initialQuery, sortOrder, currentPage);
     } else {
-      setLoading(false);
+      fetchRandomImages();
     }
-  }, [location.search, sortOrder, currentPage]);
+  }, [location.search, sortOrder, currentPage, searchImages, fetchRandomImages]);
 
   useEffect(() => {
     localStorage.setItem('favorites', JSON.stringify(favorites));
@@ -71,33 +88,6 @@ const Search = () => {
     }
   };
 
-  const searchImages = async (query: string, sort: SortOrder, page: number) => {
-    try {
-      const response = await fetch(
-        `https://api.unsplash.com/search/photos?query=${query}&per_page=${IMAGES_PER_PAGE}&page=${page}&client_id=${process.env.REACT_APP_ACCES_KEY}&order_by=${sort}`,
-      );
-
-      if (!response.ok) {
-        throw new Error(`Ошибка запроса: ${response.status}`);
-      }
-
-      const data = await response.json() as {
-        results: UnsplashImage[];
-        total: number;
-        total_pages: number;
-      };
-
-      setImages(data.results);
-      setTotalPages(data.total_pages);
-    } catch (error) {
-      console.error('Ошибка запроса фото:', error);
-      setImages([]);
-      setTotalPages(1);
-    } finally {
-      setLoading(false);
-    }
-  };
-
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage);
   };
@@ -105,36 +95,6 @@ const Search = () => {
   const handleSortChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     setSortOrder(event.target.value as SortOrder);
     setCurrentPage(1);
-  };
-
-  const truncateText = (text: string, maxLength: number): string => {
-    if (text.length > maxLength) {
-      return text.substring(0, maxLength) + '...';
-    }
-    return text;
-  };
-
-  const getVisiblePageNumbers = () => {
-    const visiblePages: number[] = [];
-
-    if (totalPages <= MAX_VISIBLE_PAGES) {
-      for (let i = 1; i <= totalPages; i++) {
-        visiblePages.push(i);
-      }
-    } else {
-      let startPage = Math.max(1, currentPage - Math.floor(MAX_VISIBLE_PAGES / 2));
-      let endPage = Math.min(totalPages, startPage + MAX_VISIBLE_PAGES - 1);
-
-      if (endPage === totalPages) {
-        startPage = Math.max(1, endPage - MAX_VISIBLE_PAGES + 1);
-      }
-
-      for (let i = startPage; i <= endPage; i++) {
-        visiblePages.push(i);
-      }
-    }
-
-    return visiblePages;
   };
 
   const isFavorite = (imageId: string) => {
@@ -164,20 +124,18 @@ const Search = () => {
   const goToPreviousImage = () => {
     if (!selectedImage) return;
     const currentIndex = images.findIndex((img) => img.id === selectedImage.id);
-    if (currentIndex > 0) {
-      setSelectedImage(images[currentIndex - 1]);
-    }
+    const previousIndex = (currentIndex - 1 + images.length) % images.length;
+    setSelectedImage(images[previousIndex]);
   };
 
   const goToNextImage = () => {
     if (!selectedImage) return;
     const currentIndex = images.findIndex((img) => img.id === selectedImage.id);
-    if (currentIndex < images.length - 1) {
-      setSelectedImage(images[currentIndex + 1]);
-    }
+    const nextIndex = (currentIndex + 1) % images.length;
+    setSelectedImage(images[nextIndex]);
   };
 
-  const visiblePageNumbers = getVisiblePageNumbers();
+  const visiblePageNumbers = getVisiblePageNumbers(totalPages, currentPage);
 
   return (
     <div>
@@ -206,11 +164,13 @@ const Search = () => {
       </div>
       <div className="content-area">
         <div className="sort-container">
-          <label htmlFor="sortOrder">Sort by:</label>
-          <select id="sortOrder" value={sortOrder} onChange={handleSortChange}>
-            <option value="relevant">Relevant</option>
-            <option value="latest">Latest</option>
-          </select>
+          <div className="sort-group">
+            <label htmlFor="sortOrder">Sort by:</label>
+            <select id="sortOrder" value={sortOrder} onChange={handleSortChange}>
+              <option value="relevant">Relevant</option>
+              <option value="latest">Latest</option>
+            </select>
+          </div>
         </div>
 
         {loading ? (
@@ -244,9 +204,7 @@ const Search = () => {
               ))}
             </div>
             <div className="pagination">
-              {currentPage > 1 && (
-                <button onClick={() => handlePageChange(currentPage - 1)}>Previous</button>
-              )}
+              {currentPage > 1 && <button onClick={() => handlePageChange(currentPage - 1)}>Previous</button>}
               {visiblePageNumbers.map((pageNumber) => (
                 <button
                   key={pageNumber}
@@ -256,45 +214,20 @@ const Search = () => {
                   {pageNumber}
                 </button>
               ))}
-              {currentPage < totalPages && (
-                <button onClick={() => handlePageChange(currentPage + 1)}>Next</button>
-              )}
+              {currentPage < totalPages && <button onClick={() => handlePageChange(currentPage + 1)}>Next</button>}
             </div>
           </>
         )}
       </div>
-
       {selectedImage && (
-        <div className="fullscreen-overlay" onClick={handleCloseFullscreen}>
-          <div className="fullscreen-image-block">
-            <button className="arrow-button left" onClick={(e) => {e.stopPropagation(); goToPreviousImage();}}>
-              <img src={arrowLeft} alt="Previous" />
-            </button>
-            <img
-              src={selectedImage.urls.regular}
-              alt={selectedImage.alt_description || 'Fullscreen Image'}
-              className="grid-image"
-            />
-            <div className="image-label">
-              <span>{truncateText(selectedImage.alt_description || 'Без описания', 50)}</span>
-              <img
-                src={getFavoriteIcon(selectedImage.id)}
-                alt="Favorite"
-                className="favorite-icon"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  toggleFavorite(selectedImage);
-                }}
-              />
-            </div>
-            <button className="arrow-button right" onClick={(e) => {e.stopPropagation(); goToNextImage();}}>
-              <img src={arrowRight} alt="Next" />
-            </button>
-            <button className="close-button" onClick={handleCloseFullscreen}>
-              <img src={closeIcon} alt="Close" />
-            </button>
-          </div>
-        </div>
+        <FullscreenOverlay
+          goToPreviousImage={goToPreviousImage}
+          selectedImage={selectedImage}
+          getFavoriteIcon={getFavoriteIcon}
+          toggleFavorite={toggleFavorite}
+          goToNextImage={goToNextImage}
+          handleCloseFullscreen={handleCloseFullscreen}
+        />
       )}
     </div>
   );
